@@ -33,7 +33,6 @@ namespace WebApplication.Services
 
         public async Task SeedDatabase()
         {
-            return;
             if (_env.IsProduction()) 
             {
                 _context.Database.Migrate();
@@ -93,7 +92,7 @@ namespace WebApplication.Services
 
             var stockManagerRole = await CreateRoleIfNotExists("stockManager");
             await AddClaim(stockManagerRole, new Claim(Constants.AppPageClaimName, "Stock"));
-            user = await CreateUserIfNotExists("stockManager", "qwe123ewq", firstYekaterinburgOffice);
+            user = await CreateUserIfNotExists("stockManager", "qwe123ewq", yekaterinburgStock);
             await AddRole(user, stockManagerRole);
         }
 
