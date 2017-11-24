@@ -33,6 +33,7 @@ namespace WebApplication.Services
 
         public async Task SeedDatabase()
         {
+            return;
             if (_env.IsProduction()) 
             {
                 _context.Database.Migrate();
@@ -87,12 +88,12 @@ namespace WebApplication.Services
 
             var adminRole = await CreateRoleIfNotExists("admin");
             await AddClaim(adminRole, new Claim(Constants.AppPageClaimName, "Admin"));
-            var user = await CreateUserIfNotExists("root", "dug77543377", moscowCity);
+            var user = await CreateUserIfNotExists("root", "dug77543377");
             await AddRole(user, adminRole);
 
             var stockManagerRole = await CreateRoleIfNotExists("stockManager");
             await AddClaim(stockManagerRole, new Claim(Constants.AppPageClaimName, "Stock"));
-            user = await CreateUserIfNotExists("stockManager", "qwe123ewq", yekaterinburgCity);
+            user = await CreateUserIfNotExists("stockManager", "qwe123ewq", firstYekaterinburgOffice);
             await AddRole(user, stockManagerRole);
         }
 
@@ -110,7 +111,7 @@ namespace WebApplication.Services
             await _userManager.AddToRoleAsync(user, role.Name);
         }
 
-        private async Task<ApplicationUser> CreateUserIfNotExists(string name, string password, City city)
+        private async Task<ApplicationUser> CreateUserIfNotExists(string name, string password, Place place = null)
         {
             var user = await _userManager.FindByNameAsync(name);
             if (user != null) {
@@ -119,7 +120,7 @@ namespace WebApplication.Services
             user = new ApplicationUser
             {
                 UserName = name,
-                City = city
+                Place = place
             };
             await _userManager.CreateAsync(user, password);
             return user;

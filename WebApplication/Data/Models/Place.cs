@@ -14,6 +14,7 @@ namespace WebApplication.Data.Models
         {
             Cartidges = new Cartidge[0];
             Printers = new Printer[0];
+            Users = new ApplicationUser[0];
         }
 
         [Key]
@@ -35,5 +36,6 @@ namespace WebApplication.Data.Models
 
         public Cartidge[] Cartidges { get; set; }
         public Printer[] Printers { get; set; }
+        public ApplicationUser[] Users { get; set; }
     }
 }

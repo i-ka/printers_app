@@ -9,9 +9,9 @@ namespace WebApplication.Data.Models
 {
     public class ApplicationUser : IdentityUser<Guid>
     {
-        public Guid CityId { get; set; }
+        public Guid? PlaceId { get; set; }
 
-        [ForeignKey(nameof(CityId))]
-        public City City { get; set; }
+        [ForeignKey(nameof(PlaceId))]
+        public Place Place { get; set; }
     }
 }

@@ -28,7 +28,7 @@ namespace WebApplication.Data
 
             builder.Entity<Place>().HasOne(o => o.City).WithMany(c => c.Offices);
 
-            builder.Entity<ApplicationUser>().HasOne(u => u.City).WithMany(c => c.Users);
+            builder.Entity<ApplicationUser>().HasOne(u => u.Place).WithMany(p => p.Users);
 
             base.OnModelCreating(builder);
         }
