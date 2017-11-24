@@ -86,14 +86,22 @@ namespace WebApplication.Services
             await _context.SaveChangesAsync();
 
             var adminRole = await CreateRoleIfNotExists("admin");
-            await _roleManager.AddClaimAsync(adminRole, new Claim(Constants.AppPageClaimName, "Admin"));
+            await AddClaim(adminRole, new Claim(Constants.AppPageClaimName, "Admin"));
             var user = await CreateUserIfNotExists("root", "dug77543377", moscowCity);
             await AddRole(user, adminRole);
 
             var stockManagerRole = await CreateRoleIfNotExists("stockManager");
-            await _roleManager.AddClaimAsync(adminRole, new Claim(Constants.AppPageClaimName, "Stock"));
+            await AddClaim(stockManagerRole, new Claim(Constants.AppPageClaimName, "Stock"));
             user = await CreateUserIfNotExists("stockManager", "qwe123ewq", yekaterinburgCity);
             await AddRole(user, stockManagerRole);
+        }
+
+        private async Task AddClaim(ApplicationRole role, Claim claim) 
+        {
+            var claims = await _roleManager.GetClaimsAsync(role);
+            var existingClaim = claims.FirstOrDefault(c => c.Type == claim.Type);
+            if (existingClaim != null) return;
+            await _roleManager.AddClaimAsync(role, claim); 
         }
 
         private async Task AddRole(ApplicationUser user, ApplicationRole role)
