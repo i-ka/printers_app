@@ -12,7 +12,6 @@ namespace WebApplication.Controllers
 {
     public class AccountController : Controller
     {
-        //private readonly DataContext _context;
         private readonly SignInManager<ApplicationUser> _signInManager;
 
         public AccountController(SignInManager<ApplicationUser> signInManager)
@@ -50,5 +49,7 @@ namespace WebApplication.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
+
+        public IActionResult AccessDenied() => View();
     }
 }
