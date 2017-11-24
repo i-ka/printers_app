@@ -31,9 +31,18 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="WorkPage">Work</a></li>
                 </ul>
+                <div class="pull-right">
+                    <ul class="nav navbar-nav">
+                        @if (User.Identity.IsAuthenticated) {
+                            <li class="navbar-text">@User.Identity.Name</li>
+                            <li><a asp-area="" asp-controller="Account" asp-action="Logout">Log out</a></li>
+                        } else {
+                            <li><a asp-area="" asp-controller="Account" asp-action="Login">Log in</a></li>
+                        }
+                    </ul>
+                </div>
             </div>
         </div>
     </nav>
