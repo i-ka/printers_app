@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using WebApplication.Data;
 using WebApplication.Data.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using WebApplication.Data.Models;
