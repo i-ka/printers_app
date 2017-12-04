@@ -12,9 +12,9 @@ namespace WebApplication.Data.Models
     {
         public Place()
         {
-            Cartidges = new Cartidge[0];
-            Printers = new Printer[0];
-            Users = new ApplicationUser[0];
+            Cartidges = new HashSet<Cartridge>();
+            Printers = new HashSet<Printer>();
+            Users = new HashSet<ApplicationUser>();
         }
 
         [Key]
@@ -34,8 +34,17 @@ namespace WebApplication.Data.Models
         [Display(Name = "Тип места")]
         public PlaceType PlaceType { get; set; }
 
-        public Cartidge[] Cartidges { get; set; }
-        public Printer[] Printers { get; set; }
-        public ApplicationUser[] Users { get; set; }
+        public HashSet<Cartridge> Cartidges { get; set; }
+        public HashSet<Printer> Printers { get; set; }
+        public HashSet<ApplicationUser> Users { get; set; }
+
+        [NotMapped]
+        public string FullName
+        {
+            get
+            {
+                return $"{PlaceType}, {City?.Name}, {Address}";
+            }
+        }
     }
 }

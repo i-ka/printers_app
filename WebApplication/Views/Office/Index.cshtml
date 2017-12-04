@@ -1,0 +1,132 @@
+﻿@using WebApplication.Data.Models.Enums
+@model WebApplication.Data.ViewModels.OfficeViewModel
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3>@ViewBag.CurrentPlace.FullName</h3>
+
+<div class="row">
+    <div class="col-md-6">
+        <h3>Неподтвержденные</h3>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Cartriges.FirstOrDefault().InventoryNumber)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Cartriges.FirstOrDefault().CompatiblePrinter)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Cartriges.FirstOrDefault().Status)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Cartriges.FirstOrDefault().Place)
+                </th>
+                <th>
+
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.Cartriges.Where(c => c.PendingConfirmation && c.PrinterId == null)) {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.InventoryNumber)
+
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CompatiblePrinter)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Status)
+                    </td>
+                    <td>
+                        <p>@item.Place.City.Name, @item.Place.Address</p>
+                    </td>
+                    <td>
+                        <a asp-action="ConfirmStatus" asp-route-id="@item.Id" class="btn btn-default">Подтвердить</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-6">
+        <h3>В офисе</h3>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Cartriges.FirstOrDefault().InventoryNumber)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Cartriges.FirstOrDefault().CompatiblePrinter)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Cartriges.FirstOrDefault().Status)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Cartriges.FirstOrDefault().Place)
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.Cartriges.Where(c => !c.PendingConfirmation && c.Status == CartridgeStatus.Filled && c.PrinterId == null)) {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.InventoryNumber)
+
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CompatiblePrinter)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Status)
+                    </td>
+                    <td>
+                        <p>@item.Place.City.Name, @item.Place.Address</p>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row">
+    <a class="btn btn-success" asp-action="AddPrinter">Добавить новый</a>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Printers.FirstOrDefault().Type)
+            </th>
+            <th>
+                Есть картридж
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Printers.FirstOrDefault().Office)
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.Printers)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Type)
+
+                </td>
+                <td>
+                    <input class="disabled" type="checkbox" @(item.Cartidge != null ? "checked" : string.Empty)/>
+                </td>
+                <td>
+                    <p>@($"{item.Office.PlaceType},{item.Office.City.Name},{item.Office.Address}")</p>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

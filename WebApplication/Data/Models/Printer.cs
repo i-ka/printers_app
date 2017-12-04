@@ -25,10 +25,10 @@ namespace WebApplication.Data.Models
         public Place Office { get; set; }
 
         [Display(AutoGenerateField = false)]
-        public Guid CartridgeId { get; set; }
+        public Guid? CartridgeId { get; set; }
 
         [Display(Name = "Текущий картридж")]
         [ForeignKey(nameof(CartridgeId))]
-        public Cartidge Cartidge { get; set; }
+        public Cartridge Cartidge { get; set; }
     }
 }

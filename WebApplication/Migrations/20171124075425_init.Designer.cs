@@ -12,8 +12,8 @@ using WebApplication.Data.Models.Enums;
 namespace WebApplication.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20171123163953_cartrige_add_confirm")]
-    partial class cartrige_add_confirm
+    [Migration("20171124075425_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -134,6 +134,8 @@ namespace WebApplication.Migrations
 
                     b.Property<int>("AccessFailedCount");
 
+                    b.Property<Guid?>("CityId");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
@@ -158,6 +160,8 @@ namespace WebApplication.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed");
 
+                    b.Property<Guid?>("PlaceId");
+
                     b.Property<string>("SecurityStamp");
 
                     b.Property<bool>("TwoFactorEnabled");
@@ -167,6 +171,8 @@ namespace WebApplication.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CityId");
+
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
 
@@ -175,10 +181,12 @@ namespace WebApplication.Migrations
                         .HasName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
+                    b.HasIndex("PlaceId");
+
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("WebApplication.Data.Models.Cartidge", b =>
+            modelBuilder.Entity("WebApplication.Data.Models.Cartridge", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
@@ -189,7 +197,7 @@ namespace WebApplication.Migrations
 
                     b.Property<bool>("PendingConfirmation");
 
-                    b.Property<Guid>("PrinterId");
+                    b.Property<Guid?>("PrinterId");
 
                     b.Property<int>("Status");
 
@@ -198,7 +206,8 @@ namespace WebApplication.Migrations
                     b.HasIndex("OfficeId");
 
                     b.HasIndex("PrinterId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[PrinterId] IS NOT NULL");
 
                     b.ToTable("Cartridges");
                 });
@@ -296,7 +305,18 @@ namespace WebApplication.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("WebApplication.Data.Models.Cartidge", b =>
+            modelBuilder.Entity("WebApplication.Data.Models.ApplicationUser", b =>
+                {
+                    b.HasOne("WebApplication.Data.Models.City")
+                        .WithMany("Users")
+                        .HasForeignKey("CityId");
+
+                    b.HasOne("WebApplication.Data.Models.Place", "Place")
+                        .WithMany("Users")
+                        .HasForeignKey("PlaceId");
+                });
+
+            modelBuilder.Entity("WebApplication.Data.Models.Cartridge", b =>
                 {
                     b.HasOne("WebApplication.Data.Models.Place", "Office")
                         .WithMany("Cartidges")
@@ -305,7 +325,7 @@ namespace WebApplication.Migrations
 
                     b.HasOne("WebApplication.Data.Models.Printer", "Printer")
                         .WithOne("Cartidge")
-                        .HasForeignKey("WebApplication.Data.Models.Cartidge", "PrinterId");
+                        .HasForeignKey("WebApplication.Data.Models.Cartridge", "PrinterId");
                 });
 
             modelBuilder.Entity("WebApplication.Data.Models.Place", b =>

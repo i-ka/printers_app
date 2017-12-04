@@ -185,27 +185,35 @@ namespace WebApplication.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("WebApplication.Data.Models.Cartidge", b =>
+            modelBuilder.Entity("WebApplication.Data.Models.Cartridge", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("CompatiblePrinter");
 
-                    b.Property<Guid>("OfficeId");
+                    b.Property<string>("InventoryNumber")
+                        .IsRequired()
+                        .HasMaxLength(15);
 
                     b.Property<bool>("PendingConfirmation");
 
-                    b.Property<Guid>("PrinterId");
+                    b.Property<Guid>("PlaceId");
+
+                    b.Property<Guid?>("PrinterId");
 
                     b.Property<int>("Status");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OfficeId");
+                    b.HasIndex("InventoryNumber")
+                        .IsUnique();
+
+                    b.HasIndex("PlaceId");
 
                     b.HasIndex("PrinterId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[PrinterId] IS NOT NULL");
 
                     b.ToTable("Cartridges");
                 });
@@ -245,7 +253,7 @@ namespace WebApplication.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<Guid>("CartridgeId");
+                    b.Property<Guid?>("CartridgeId");
 
                     b.Property<Guid>("OfficeId");
 
@@ -314,16 +322,16 @@ namespace WebApplication.Migrations
                         .HasForeignKey("PlaceId");
                 });
 
-            modelBuilder.Entity("WebApplication.Data.Models.Cartidge", b =>
+            modelBuilder.Entity("WebApplication.Data.Models.Cartridge", b =>
                 {
-                    b.HasOne("WebApplication.Data.Models.Place", "Office")
+                    b.HasOne("WebApplication.Data.Models.Place", "Place")
                         .WithMany("Cartidges")
-                        .HasForeignKey("OfficeId")
+                        .HasForeignKey("PlaceId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("WebApplication.Data.Models.Printer", "Printer")
                         .WithOne("Cartidge")
-                        .HasForeignKey("WebApplication.Data.Models.Cartidge", "PrinterId");
+                        .HasForeignKey("WebApplication.Data.Models.Cartridge", "PrinterId");
                 });
 
             modelBuilder.Entity("WebApplication.Data.Models.Place", b =>

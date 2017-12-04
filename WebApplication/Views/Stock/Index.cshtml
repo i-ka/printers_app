@@ -1,8 +1,151 @@
-﻿
+﻿@using WebApplication.Data.Models.Enums
+@model IEnumerable<WebApplication.Data.Models.Cartridge>
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Stock Index</h2>
+<h3>Текущее местоположение: @ViewData["currentPlace"]</h3>
+<p>
+    <a asp-action="CreateCartrige" class="btn btn-success">Добавить новый</a>
+</p>
+
+<div class="row">
+    <div class="col-md-6">
+        <h3>Рабочие картриджи</h3>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.InventoryNumber)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.CompatiblePrinter)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Status)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Place)
+                    </th>
+                    <th>
+
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Where(c => c.Status != CartridgeStatus.Broken).Where(c => !c.PendingConfirmation)) {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.InventoryNumber)
+
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CompatiblePrinter)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Status)
+                        </td>
+                        <td>
+                            <p>@item.Place.City.Name, @item.Place.Address</p>
+                        </td>
+                        <td><a asp-action="SendCartrige" asp-route-id="@item.Id" class="btn btn-default">Отправить</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-6">
+        <h3>Сломаные картриджи</h3>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.InventoryNumber)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.CompatiblePrinter)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Status)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.PendingConfirmation)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Place)
+                    </th>
+                    <th>
+
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Where(c => c.Status == CartridgeStatus.Broken).Where(c => !c.PendingConfirmation)) {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.InventoryNumber)
+
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CompatiblePrinter)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Status)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PendingConfirmation)
+                        </td>
+                        <td>
+                            <p>@item.Place.City.Name, @item.Place.Address</p>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <h3>Не подтвержденные</h3>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.InventoryNumber)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CompatiblePrinter)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Status)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Place)
+                </th>
+                <th>
+
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Where(c => c.Status != CartridgeStatus.Broken).Where(c => c.PendingConfirmation)) {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.InventoryNumber)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CompatiblePrinter)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Status)
+                    </td>
+                    <td>
+                        <p>@item.Place.City.Name, @item.Place.Address</p>
+                    </td>
+                    <td><a asp-action="ConfirmStatus" asp-route-id="@item.Id" class="btn btn-default">Отправить</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
 

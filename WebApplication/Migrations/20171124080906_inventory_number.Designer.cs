@@ -12,8 +12,8 @@ using WebApplication.Data.Models.Enums;
 namespace WebApplication.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20171122164351_first_data_model")]
-    partial class first_data_model
+    [Migration("20171124080906_inventory_number")]
+    partial class inventory_number
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -134,6 +134,8 @@ namespace WebApplication.Migrations
 
                     b.Property<int>("AccessFailedCount");
 
+                    b.Property<Guid?>("CityId");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
@@ -158,6 +160,8 @@ namespace WebApplication.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed");
 
+                    b.Property<Guid?>("PlaceId");
+
                     b.Property<string>("SecurityStamp");
 
                     b.Property<bool>("TwoFactorEnabled");
@@ -167,6 +171,8 @@ namespace WebApplication.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CityId");
+
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
 
@@ -175,28 +181,39 @@ namespace WebApplication.Migrations
                         .HasName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
+                    b.HasIndex("PlaceId");
+
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("WebApplication.Data.Models.Cartidge", b =>
+            modelBuilder.Entity("WebApplication.Data.Models.Cartridge", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("CompatiblePrinter");
 
-                    b.Property<Guid>("OfficeId");
+                    b.Property<string>("InventoryNumber");
 
-                    b.Property<Guid>("PrinterId");
+                    b.Property<bool>("PendingConfirmation");
+
+                    b.Property<Guid>("PlaceId");
+
+                    b.Property<Guid?>("PrinterId");
 
                     b.Property<int>("Status");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OfficeId");
+                    b.HasIndex("InventoryNumber")
+                        .IsUnique()
+                        .HasFilter("[InventoryNumber] IS NOT NULL");
+
+                    b.HasIndex("PlaceId");
 
                     b.HasIndex("PrinterId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[PrinterId] IS NOT NULL");
 
                     b.ToTable("Cartridges");
                 });
@@ -213,7 +230,7 @@ namespace WebApplication.Migrations
                     b.ToTable("Cities");
                 });
 
-            modelBuilder.Entity("WebApplication.Data.Models.Office", b =>
+            modelBuilder.Entity("WebApplication.Data.Models.Place", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
@@ -221,6 +238,8 @@ namespace WebApplication.Migrations
                     b.Property<string>("Address");
 
                     b.Property<Guid>("CityId");
+
+                    b.Property<int>("PlaceType");
 
                     b.HasKey("Id");
 
@@ -292,19 +311,30 @@ namespace WebApplication.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("WebApplication.Data.Models.Cartidge", b =>
+            modelBuilder.Entity("WebApplication.Data.Models.ApplicationUser", b =>
                 {
-                    b.HasOne("WebApplication.Data.Models.Office", "Office")
-                        .WithMany()
-                        .HasForeignKey("OfficeId")
+                    b.HasOne("WebApplication.Data.Models.City")
+                        .WithMany("Users")
+                        .HasForeignKey("CityId");
+
+                    b.HasOne("WebApplication.Data.Models.Place", "Place")
+                        .WithMany("Users")
+                        .HasForeignKey("PlaceId");
+                });
+
+            modelBuilder.Entity("WebApplication.Data.Models.Cartridge", b =>
+                {
+                    b.HasOne("WebApplication.Data.Models.Place", "Place")
+                        .WithMany("Cartidges")
+                        .HasForeignKey("PlaceId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("WebApplication.Data.Models.Printer", "Printer")
                         .WithOne("Cartidge")
-                        .HasForeignKey("WebApplication.Data.Models.Cartidge", "PrinterId");
+                        .HasForeignKey("WebApplication.Data.Models.Cartridge", "PrinterId");
                 });
 
-            modelBuilder.Entity("WebApplication.Data.Models.Office", b =>
+            modelBuilder.Entity("WebApplication.Data.Models.Place", b =>
                 {
                     b.HasOne("WebApplication.Data.Models.City", "City")
                         .WithMany("Offices")
@@ -314,8 +344,8 @@ namespace WebApplication.Migrations
 
             modelBuilder.Entity("WebApplication.Data.Models.Printer", b =>
                 {
-                    b.HasOne("WebApplication.Data.Models.Office", "Office")
-                        .WithMany()
+                    b.HasOne("WebApplication.Data.Models.Place", "Office")
+                        .WithMany("Printers")
                         .HasForeignKey("OfficeId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

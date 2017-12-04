@@ -1,0 +1,58 @@
+﻿@using WebApplication.Data.Models
+@using WebApplication.Data.Models.Enums
+@model IEnumerable<WebApplication.Data.Models.Printer>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>@($"{ViewBag.CurrentPlace.FullName}")</h2>
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Type)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Office)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Cartidge)
+                    </th>
+                    <th>
+
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model) {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Type)
+                        </td>
+                        <td>
+                            <p>
+                                @item.Office.FullName
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                @(item.Cartidge != null
+                                    ? $"{item.Cartidge.InventoryNumber}, {item.Cartidge.Status}" : "Нет")
+                            </p>
+                        </td>
+                        <td>
+
+                            @if (item.Cartidge != null) {
+                                <a asp-action="RemoveCartrige" asp-route-id="@item.Id" class="btn btn-danger">Убрать картридж</a>
+                            } else {
+                                <a asp-action="InsertCartrige" asp-route-id="@item.Id" class="btn btn-default">Установить картридж</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

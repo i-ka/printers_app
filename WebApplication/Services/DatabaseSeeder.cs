@@ -94,6 +94,18 @@ namespace WebApplication.Services
             await AddClaim(stockManagerRole, new Claim(Constants.AppPageClaimName, "Stock"));
             user = await CreateUserIfNotExists("stockManager", "qwe123ewq", yekaterinburgStock);
             await AddRole(user, stockManagerRole);
+            user = await CreateUserIfNotExists("stockManagerM", "qwe123ewq", moscowStock);
+            await AddRole(user, stockManagerRole);
+
+            var officeManagerRole = await CreateRoleIfNotExists("officeManager");
+            await AddClaim(officeManagerRole, new Claim(Constants.AppPageClaimName, "Office"));
+            user = await CreateUserIfNotExists("officeManagerE", "qwe123ewq", firstYekaterinburgOffice);
+            await AddRole(user, officeManagerRole);
+
+            var techSupportRole = await CreateRoleIfNotExists("techManager");
+            await AddClaim(techSupportRole, new Claim(Constants.AppPageClaimName, "TechSupport"));
+            user = await CreateUserIfNotExists("techManagerE", "qwe123ewq", firstYekaterinburgOffice);
+            await AddRole(user, techSupportRole);
         }
 
         private async Task AddClaim(ApplicationRole role, Claim claim) 
