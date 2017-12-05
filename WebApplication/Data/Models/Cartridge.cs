@@ -21,7 +21,7 @@ namespace WebApplication.Data.Models
         [Display(Name = "Инвентарный номер")]
         public string InventoryNumber { get; set; }
 
-        [Display(AutoGenerateField = false)]
+        [Display(Name = "Местоположение", AutoGenerateField = false)]
         public Guid PlaceId { get; set; }
 
         [Display(Name = "Текущий офис")]
@@ -32,14 +32,14 @@ namespace WebApplication.Data.Models
         [Display(Name = "Совместимый тип принтера")]
         public PrinterType CompatiblePrinter { get; set; }
 
-        [Display (Name = "Статус")]
+        [Display(Name = "Статус")]
         public CartridgeStatus Status { get; set; }
 
-        [Display(AutoGenerateField = false)]
-        public Guid? PrinterId { get; set; }
+        //[Display(AutoGenerateField = false)]
+        //public Guid? PrinterId { get; set; }
 
         [Display(Name = "Текущий принтер")]
-        [ForeignKey(nameof(PrinterId))]
+        //[ForeignKey(nameof(PrinterId))]
         public Printer Printer { get; set; }
 
         [Display(Name = "Ожидает подтверждения")]

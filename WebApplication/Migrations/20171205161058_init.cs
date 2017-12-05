@@ -116,20 +116,22 @@ namespace WebApplication.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Printers",
+                name: "Cartridges",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CartridgeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OfficeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Type = table.Column<int>(type: "int", nullable: false)
+                    CompatiblePrinter = table.Column<int>(type: "int", nullable: false),
+                    InventoryNumber = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
+                    PendingConfirmation = table.Column<bool>(type: "bit", nullable: false),
+                    PlaceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Printers", x => x.Id);
+                    table.PrimaryKey("PK_Cartridges", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Printers_Offices_OfficeId",
-                        column: x => x.OfficeId,
+                        name: "FK_Cartridges_Offices_PlaceId",
+                        column: x => x.PlaceId,
                         principalTable: "Offices",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -221,31 +223,29 @@ namespace WebApplication.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Cartridges",
+                name: "Printers",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CompatiblePrinter = table.Column<int>(type: "int", nullable: false),
+                    CartridgeId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     OfficeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PendingConfirmation = table.Column<bool>(type: "bit", nullable: false),
-                    PrinterId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Status = table.Column<int>(type: "int", nullable: false)
+                    Type = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Cartridges", x => x.Id);
+                    table.PrimaryKey("PK_Printers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Cartridges_Offices_OfficeId",
+                        name: "FK_Printers_Cartridges_CartridgeId",
+                        column: x => x.CartridgeId,
+                        principalTable: "Cartridges",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Printers_Offices_OfficeId",
                         column: x => x.OfficeId,
                         principalTable: "Offices",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Cartridges_Printers_PrinterId",
-                        column: x => x.PrinterId,
-                        principalTable: "Printers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -298,21 +298,27 @@ namespace WebApplication.Migrations
                 column: "PlaceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cartridges_OfficeId",
+                name: "IX_Cartridges_InventoryNumber",
                 table: "Cartridges",
-                column: "OfficeId");
+                column: "InventoryNumber",
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cartridges_PrinterId",
+                name: "IX_Cartridges_PlaceId",
                 table: "Cartridges",
-                column: "PrinterId",
-                unique: true,
-                filter: "[PrinterId] IS NOT NULL");
+                column: "PlaceId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Offices_CityId",
                 table: "Offices",
                 column: "CityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Printers_CartridgeId",
+                table: "Printers",
+                column: "CartridgeId",
+                unique: true,
+                filter: "[CartridgeId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Printers_OfficeId",
@@ -338,7 +344,7 @@ namespace WebApplication.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Cartridges");
+                name: "Printers");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -347,7 +353,7 @@ namespace WebApplication.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Printers");
+                name: "Cartridges");
 
             migrationBuilder.DropTable(
                 name: "Offices");

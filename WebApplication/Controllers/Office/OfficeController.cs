@@ -71,5 +71,60 @@ namespace WebApplication.Controllers.Office
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
+        [HttpGet]
+        public async Task<IActionResult> SendCartrige(Guid? id)
+        {
+            if (id == null) return NotFound();
+            var promoCode = await _context.Cartridges.SingleOrDefaultAsync(m => m.Id == id);
+            if (promoCode == null) return NotFound();
+            ViewBag.Places = _context.Offices.Include(p => p.City);
+            return View(promoCode);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> MarkAsEmpty(Guid? id)
+        {
+            if (id == null) return NotFound();
+            var cartrige = await _context.Cartridges.SingleOrDefaultAsync(c => c.Printer.Id == id);
+            if (cartrige == null) return NotFound();
+            cartrige.Status = CartridgeStatus.Empty;
+            _context.Update(cartrige);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SendCartrige(Guid? id, [Bind("Id,InventoryNumber,PlaceId")]Cartridge cartrige)
+        {
+            if (cartrige.Id != id) return NotFound();
+            if (!ModelState.IsValid) {
+                ViewBag.Places = _context.Offices.Include(p => p.City);
+                return View(cartrige);
+            }
+            cartrige.PendingConfirmation = true;
+            try {
+                _context.Update(cartrige);
+                await _context.SaveChangesAsync();
+            } catch (DbUpdateConcurrencyException) {
+                if (_context.Cartridges.Any(c => c.Id == id))
+                    return NotFound();
+
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> SendToRefiling(Guid? id)
+        {
+            if (id == null) return NotFound();
+            var cartridge = _context.Cartridges.SingleOrDefault(c => c.Id == id);
+            if (cartridge == null) return NotFound();
+            var someRefiling = _context.Offices.FirstOrDefault(p => p.PlaceType == PlaceType.Refiling && p.City == currentPlace.Value.City);
+            cartridge.Place = someRefiling ?? currentPlace.Value;
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

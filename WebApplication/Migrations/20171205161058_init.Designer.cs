@@ -12,7 +12,7 @@ using WebApplication.Data.Models.Enums;
 namespace WebApplication.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20171124075425_init")]
+    [Migration("20171205161058_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -193,21 +193,22 @@ namespace WebApplication.Migrations
 
                     b.Property<int>("CompatiblePrinter");
 
-                    b.Property<Guid>("OfficeId");
+                    b.Property<string>("InventoryNumber")
+                        .IsRequired()
+                        .HasMaxLength(15);
 
                     b.Property<bool>("PendingConfirmation");
 
-                    b.Property<Guid?>("PrinterId");
+                    b.Property<Guid>("PlaceId");
 
                     b.Property<int>("Status");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OfficeId");
+                    b.HasIndex("InventoryNumber")
+                        .IsUnique();
 
-                    b.HasIndex("PrinterId")
-                        .IsUnique()
-                        .HasFilter("[PrinterId] IS NOT NULL");
+                    b.HasIndex("PlaceId");
 
                     b.ToTable("Cartridges");
                 });
@@ -247,13 +248,17 @@ namespace WebApplication.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<Guid>("CartridgeId");
+                    b.Property<Guid?>("CartridgeId");
 
                     b.Property<Guid>("OfficeId");
 
                     b.Property<int>("Type");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CartridgeId")
+                        .IsUnique()
+                        .HasFilter("[CartridgeId] IS NOT NULL");
 
                     b.HasIndex("OfficeId");
 
@@ -318,14 +323,10 @@ namespace WebApplication.Migrations
 
             modelBuilder.Entity("WebApplication.Data.Models.Cartridge", b =>
                 {
-                    b.HasOne("WebApplication.Data.Models.Place", "Office")
+                    b.HasOne("WebApplication.Data.Models.Place", "Place")
                         .WithMany("Cartidges")
-                        .HasForeignKey("OfficeId")
+                        .HasForeignKey("PlaceId")
                         .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("WebApplication.Data.Models.Printer", "Printer")
-                        .WithOne("Cartidge")
-                        .HasForeignKey("WebApplication.Data.Models.Cartridge", "PrinterId");
                 });
 
             modelBuilder.Entity("WebApplication.Data.Models.Place", b =>
@@ -338,6 +339,10 @@ namespace WebApplication.Migrations
 
             modelBuilder.Entity("WebApplication.Data.Models.Printer", b =>
                 {
+                    b.HasOne("WebApplication.Data.Models.Cartridge", "Cartidge")
+                        .WithOne("Printer")
+                        .HasForeignKey("WebApplication.Data.Models.Printer", "CartridgeId");
+
                     b.HasOne("WebApplication.Data.Models.Place", "Office")
                         .WithMany("Printers")
                         .HasForeignKey("OfficeId")

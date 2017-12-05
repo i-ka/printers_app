@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - WebApplication</title>
+    <title>@ViewData["Title"] - Система оборота картриджей</title>
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
@@ -26,20 +26,20 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">WebApplication</a>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Система оборота картриджей</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="WorkPage">Work</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Домашняя страница</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="WorkPage">Рабочая страница</a></li>
                 </ul>
                 <div class="pull-right">
                     <ul class="nav navbar-nav">
                         @if (User.Identity.IsAuthenticated) {
                             <li class="navbar-text">@User.Identity.Name</li>
-                            <li><a asp-area="" asp-controller="Account" asp-action="Logout">Log out</a></li>
+                            <li><a asp-area="" asp-controller="Account" asp-action="Logout">Выйти</a></li>
                         } else {
-                            <li><a asp-area="" asp-controller="Account" asp-action="Login">Log in</a></li>
+                            <li><a asp-area="" asp-controller="Account" asp-action="Login">Войти</a></li>
                         }
                     </ul>
                 </div>
@@ -50,7 +50,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; 2017 - WebApplication</p>
+            <p>&copy; 2017 - Система оборота картриджей</p>
         </footer>
     </div>
 

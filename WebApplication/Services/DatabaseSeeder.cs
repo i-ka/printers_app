@@ -83,6 +83,13 @@ namespace WebApplication.Services
                 PlaceType = PlaceType.Stock,
                 Address = "Складская, д. 5"
             }, s => s.Address == "Складская, д. 5" && s.City.Name == yekaterinburgCity.Name && s.PlaceType == PlaceType.Stock);
+            var yekaterinburgRefilling = _context.Offices.CreateIfNotExists(new Place
+            {
+                City = yekaterinburgCity,
+                PlaceType = PlaceType.Refiling,
+                Address = "Заправочная, д. 10"
+            }, s => s.Address == "Заправочная, д. 10" && s.City.Name == yekaterinburgCity.Name && s.PlaceType == PlaceType.Refiling);
+
             await _context.SaveChangesAsync();
 
             var adminRole = await CreateRoleIfNotExists("admin");

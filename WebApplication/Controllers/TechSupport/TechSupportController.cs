@@ -41,10 +41,10 @@ namespace WebApplication.Controllers.TechSupport
         public IActionResult InsertCartrige(Guid? id)
         {
             if (id == null) return NotFound();
-            var printer = _context.Printers.SingleOrDefault(p => p.Id == id);
+            var printer = _context.Printers.Include(p => p.Cartidge).SingleOrDefault(p => p.Id == id);
             if (printer == null) return NotFound();
-            if (printer.CartridgeId != null) return NotFound();
-            var cartriges = _context.Cartridges.Where(c => c.PrinterId == null
+            if (printer.Cartidge != null) return NotFound();
+            var cartriges = _context.Cartridges.Where(c => c.Printer.Id == null
                                                            && c.CompatiblePrinter == printer.Type
                                                            && c.PlaceId == _currentPlace.Value.Id
                                                            && c.Status == CartridgeStatus.Filled);
@@ -57,18 +57,18 @@ namespace WebApplication.Controllers.TechSupport
         {
             if (printer.Id != id) return NotFound();
             if (!ModelState.IsValid) {
-                ViewBag.Cartriges = _context.Cartridges.Where(c => c.PrinterId == null
+                ViewBag.Cartriges = _context.Cartridges.Where(c => c.Printer.Id == null
                                                                 && c.CompatiblePrinter == printer.Type
                                                                 && c.PlaceId == _currentPlace.Value.Id);
                 return View(printer);
             }
             try
             {
+                var entry = _context.Attach(printer);
                 var cartrige = _context.Cartridges.SingleOrDefault(c => c.Id == printer.CartridgeId);
                 printer.Cartidge = cartrige;
-                printer.Office = _currentPlace.Value;
-                _context.Update(printer);
-                
+                //printer.Office = _currentPlace.Value;
+                entry.Reference(p => p.Cartidge).IsModified = true;
                 await _context.SaveChangesAsync();
             } catch (DbUpdateConcurrencyException) {
                 if (_context.Cartridges.Any(c => c.Id == id))
